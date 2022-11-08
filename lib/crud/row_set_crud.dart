@@ -1,6 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:workout1/constants.dart';
+import 'package:workout1/crud/set_ex_crud.dart';
 import 'package:workout1/model/row_set.dart';
 import 'package:workout1/model/set_ex.dart';
 
@@ -77,7 +78,7 @@ class row_set_crud {
         int trainDayId = list[i]['trainDayId'];
         int ExId = list[i]['ExId'];
         String ExName = list[i]['ExName'];
-        List<SetEx> listSetEx = [];
+        List<SetEx> listSetEx = await SetExCrud.getAll(id);
         RowSet ex = RowSet(id, trainDayId, ExId, ExName, listSetEx);
         listDays.add(ex);
       }

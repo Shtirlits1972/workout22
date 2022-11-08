@@ -1,26 +1,28 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:workout1/constants.dart';
+import 'package:workout1/model/set_ex.dart';
 
 class SetExCrud {
-  // static Future<exercise> add(String NameEx) async {
-  //   String command = 'INSERT INTO exercise (NameEx) values(?);';
-  //   exercise ex = exercise.empty();
+  static Future<SetEx> add(SetEx setEx) async {
+    String command = 'INSERT INTO SetEx (RowId, weight, qty) values(?, ?, ?);';
+    SetEx ex = SetEx.empty();
 
-  //   String strPath = await getDatabasesPath();
-  //   String path = join(strPath, dbName);
-  //   Database db = await openDatabase(path, version: 1);
+    String strPath = await getDatabasesPath();
+    String path = join(strPath, dbName);
+    Database db = await openDatabase(path, version: 1);
 
-  //   ex = await db.transaction<exercise>((txn) async {
-  //     int id = await txn.rawInsert(command, [NameEx]);
-  //     exercise ex1 = exercise(id, NameEx);
-  //     return ex1;
-  //   });
-  //   return ex;
-  // }
+    ex = await db.transaction<SetEx>((txn) async {
+      int id =
+          await txn.rawInsert(command, [setEx.RowId, setEx.weight, setEx.qty]);
+      SetEx stE = SetEx(id, setEx.RowId, setEx.weight, setEx.qty);
+      return stE;
+    });
+    return ex;
+  }
 
   static Future del(int id) async {
-    String command = 'DELETE FROM exercise WHERE id = ?';
+    String command = 'DELETE FROM SetEx WHERE id = ?';
     try {
       String strPath = await getDatabasesPath();
       String path = join(strPath, dbName);
@@ -34,42 +36,49 @@ class SetExCrud {
     }
   }
 
-  // static Future upd(int id, String NameEx) async {
-  //   String command = 'UPDATE exercise SET NameEx = ? WHERE id = ?';
+  static Future upd(SetEx setEx) async {
+    String command =
+        'UPDATE SetEx SET RowId = ?, weight = ?, qty = ? WHERE id = ?';
 
-  //   try {
-  //     String strPath = await getDatabasesPath();
-  //     String path = join(strPath, dbName);
-  //     Database db = await openDatabase(path, version: 1);
+    try {
+      String strPath = await getDatabasesPath();
+      String path = join(strPath, dbName);
+      Database db = await openDatabase(path, version: 1);
 
-  //     int count = await db.rawUpdate(command, [NameEx, id]);
+      int count = await db
+          .rawUpdate(command, [setEx.RowId, setEx.weight, setEx.qty, setEx.id]);
 
-  //     print('row updated = $count ');
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+      print('row updated = $count ');
+    } catch (e) {
+      print(e);
+    }
+  }
 
-  // static Future<List<exercise>> getAll() async {
-  //   List<exercise> listEx = [];
+  static Future<List<SetEx>> getAll(int RowId) async {
+    List<SetEx> listSetEx = [];
 
-  //   try {
-  //     String strPath = await getDatabasesPath();
-  //     String path = join(strPath, dbName);
+    try {
+      String strPath = await getDatabasesPath();
+      String path = join(strPath, dbName);
 
-  //     Database db = await openDatabase(path, version: 1);
+      Database db = await openDatabase(path, version: 1);
 
-  //     List<Map> list = await db.rawQuery('SELECT id, NameEx FROM exercise ;');
+      List<Map> list = await db.rawQuery(
+          'SELECT id, RowId, weight, qty FROM SetEx WHERE RowId = ? ;',
+          [RowId]);
 
-  //     for (int i = 0; i < list.length; i++) {
-  //       int id = list[i]['id'];
-  //       String NameEx = list[i]['NameEx'];
-  //       exercise ex = exercise(id, NameEx);
-  //       listEx.add(ex);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  //   return listEx;
-  // }
+      for (int i = 0; i < list.length; i++) {
+        int id = list[i]['id'];
+        //  int RowId = list[i]['RowId'];
+        double weight = list[i]['weight'];
+        int qty = list[i]['qty'];
+
+        SetEx setEx = SetEx(id, RowId, weight, qty);
+        listSetEx.add(setEx);
+      }
+    } catch (e) {
+      print(e);
+    }
+    return listSetEx;
+  }
 }

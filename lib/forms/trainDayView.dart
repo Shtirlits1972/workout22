@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:workout1/constants.dart';
 import 'package:workout1/crud/row_set_crud.dart';
+import 'package:workout1/crud/set_ex_crud.dart';
 import 'package:workout1/forms/set_ex_add.dart';
 import 'package:workout1/model/exercise.dart';
 import 'package:workout1/model/row_set.dart';
@@ -87,12 +88,17 @@ class _TrainDayViewState extends State<TrainDayView> {
                             onPressed: () async {
                               print('Add one time');
                               RowSet rowSet1 = listRowSet[index];
-                              Navigator.pushNamed<SetEx>(context, '/SetExAdd')
+                              Navigator.pushNamed(context, '/SetExAdd')
                                   .then((value) {
                                 if (value != null) {
-                                  value.RowId = listRowSet[index].id;
-
-                                  print(value);
+                                  SetEx setEx = value as SetEx;
+                                  // value.RowId = listRowSet[index].id;
+                                  SetExCrud.add(setEx).then((value2) {
+                                    setState(() {
+                                      listRowSet[index].listSetex.add(setEx);
+                                      print(value2);
+                                    });
+                                  });
                                 }
                               });
 
@@ -161,6 +167,28 @@ class _TrainDayViewState extends State<TrainDayView> {
                               )),
                         ],
                       ),
+                      getSetExRow(listRowSet[index].listSetex),
+                      // ListView.separated(
+                      //     itemBuilder: (context, index) {
+                      //       return Text(
+                      //         '0000',
+                      //         style: txt15,
+                      //       );
+                      //     },
+                      //     separatorBuilder: (context, index) => const Divider(
+                      //           color: Colors.black,
+                      //           thickness: 1,
+                      //         ),
+                      //     itemCount: listRowSet[index].listSetex.length),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: [
+                      //     Text(
+                      //       listRowSet[index].listSetex.length.toString(),
+                      //       style: txt15,
+                      //     ),
+                      //   ],
+                      // )
                     ],
                   );
                 },
@@ -169,6 +197,23 @@ class _TrainDayViewState extends State<TrainDayView> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget getSetExRow(List<SetEx> list) {
+    List<Widget> lstWidget = [];
+
+    for (int i = 0; i < list.length; i++) {
+      Text txt = Text(
+        list[i].weight.toString() + ' X ' + list[i].qty.toString(),
+        style: txt15,
+      );
+      lstWidget.add(txt);
+    }
+
+    return Row(
+      children: lstWidget,
+      mainAxisAlignment: MainAxisAlignment.start,
     );
   }
 

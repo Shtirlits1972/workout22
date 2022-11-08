@@ -38,7 +38,6 @@ class AppRouter {
 //   return MaterialPageRoute(builder: (context) => SurveyConsentPage(languageCode: code));
 
       case '/SetExAdd':
-        // String rowSet = routeSettings.arguments as String;
         return MaterialPageRoute(
           builder: (context) => SetExAdd(),
         );

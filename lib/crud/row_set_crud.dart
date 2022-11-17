@@ -29,12 +29,15 @@ class row_set_crud {
   }
 
   static Future del(int id) async {
+    String delSetEx = 'DELETE FROM SetEx WHERE RowId = ?';
     String command = 'DELETE FROM RowSet WHERE id = ?';
     try {
       String strPath = await getDatabasesPath();
       String path = join(strPath, dbName);
       Database db = await openDatabase(path, version: 1);
 
+      int cntSetEx = await db.rawDelete(delSetEx, [id]);
+      print('SetEx delete = $cntSetEx ');
       int count = await db.rawDelete(command, [id]);
 
       print('row delete = $count ');
@@ -60,8 +63,8 @@ class row_set_crud {
     }
   }
 
-  static Future<List<RowSet>> getAll(int traynId) async {
-    List<RowSet> listDays = [];
+  static Future<List<RowSet>?> getAll(int traynId) async {
+    List<RowSet> listRowSet = [];
 
     try {
       String strPath = await getDatabasesPath();
@@ -78,13 +81,18 @@ class row_set_crud {
         int trainDayId = list[i]['trainDayId'];
         int ExId = list[i]['ExId'];
         String ExName = list[i]['ExName'];
-        List<SetEx> listSetEx = await SetExCrud.getAll(id);
-        RowSet ex = RowSet(id, trainDayId, ExId, ExName, listSetEx);
-        listDays.add(ex);
+
+        List<SetEx> listSetex33 = await SetExCrud.getAll(id);
+        print(listSetex33);
+        RowSet ex = RowSet(id, trainDayId, ExId, ExName, listSetex33);
+        print(ex);
+        listRowSet.add(ex);
       }
+      return listRowSet;
     } catch (e) {
       print(e);
+      return null;
     }
-    return listDays;
+    // return listRowSet;
   }
 }

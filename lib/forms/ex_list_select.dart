@@ -13,8 +13,8 @@ class ExListSelect extends StatefulWidget {
 }
 
 class _ExListSelectState extends State<ExListSelect> {
-  exercise selectEx = exercise.empty();
-  int groupValue = 1;
+  late exercise selectEx;
+  int groupValue = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +34,7 @@ class _ExListSelectState extends State<ExListSelect> {
         ],
       ),
       body: BlocBuilder<DataCubitEx, KeeperEx>(builder: (context, state) {
+        int h = 0;
         return Center(
           child: Column(
             children: [
@@ -125,6 +126,10 @@ class _ExListSelectState extends State<ExListSelect> {
     exCrud.getAll().then((value) {
       setState(() {
         context.read<DataCubitEx>().setExercise(value);
+        selectEx = context.read<DataCubitEx>().getExercise[0];
+        groupValue = selectEx.id;
+        print('selectEx = $selectEx');
+        print('groupValue = $groupValue');
       });
     });
   }

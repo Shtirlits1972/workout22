@@ -1,6 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:workout1/constants.dart';
+import 'package:workout1/crud/row_set_crud.dart';
+import 'package:workout1/model/row_set.dart';
 import 'package:workout1/model/trayn_day.dart';
 
 class train_day_crud {
@@ -30,6 +32,14 @@ class train_day_crud {
       String strPath = await getDatabasesPath();
       String path = join(strPath, dbName);
       Database db = await openDatabase(path, version: 1);
+
+      List<RowSet>? lstRowSet = await row_set_crud.getAll(id);
+
+      if (lstRowSet != null) {
+        for (int i = 0; i < lstRowSet.length; i++) {
+          row_set_crud.del(lstRowSet[i].id);
+        }
+      }
 
       int count = await db.rawDelete(command, [id]);
 

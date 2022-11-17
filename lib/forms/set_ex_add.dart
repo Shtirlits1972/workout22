@@ -4,9 +4,13 @@ import 'package:workout1/model/row_set.dart';
 import 'package:workout1/model/set_ex.dart';
 
 class SetExAdd extends StatefulWidget {
-  SetExAdd({Key? key}) : super(key: key);
-  // RowSet rowSet;
-  //String strName;
+  SetExAdd({
+    required this.rowSet,
+    Key? key,
+  }) : super(key: key);
+  // static const routeName = '/extractArguments';
+  final RowSet rowSet;
+
   @override
   _SetExAddState createState() => _SetExAddState();
 }
@@ -16,16 +20,14 @@ class _SetExAddState extends State<SetExAdd> {
   TextEditingController qtyContr = TextEditingController(text: '1');
   @override
   Widget build(BuildContext context) {
-    final Object? args = ModalRoute.of(context)?.settings.arguments;
-    //Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
-    //final arguments = ModalRoute.of(context)?.settings.arguments as String?;
-    //final rs = arguments['rowSet1'];
+    // RouteSettings settings = ModalRoute.of(context)!.settings;
+
     int y = 0;
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('widget.strName'),
+        title: Text(widget.rowSet.ExName),
       ),
       body: Center(
         child: Column(
@@ -114,7 +116,7 @@ class _SetExAddState extends State<SetExAdd> {
                         print(e);
                       }
 
-                      SetEx setEx = SetEx(0, 0, dubWeight, qty);
+                      SetEx setEx = SetEx(0, widget.rowSet.id, dubWeight, qty);
                       Navigator.pop(context, setEx);
                     }),
                     child: Text(
